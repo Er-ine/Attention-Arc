@@ -1,24 +1,67 @@
-ttention Arc
+<div align="center">
 
-A learning app for students aged 7–16 that turns any study material into a personalized learning loop: material → understanding → diagnosis → human help → reinforcement.
+# 🎯 Attention Arc
 
-How it works
-Student uploads a chapter/notes (PDF)
-AI breaks it into core concepts and explains them at an age-appropriate level
-A short quiz checks understanding, tagged concept-by-concept
-The app builds a learning map (mastered / improving / weak) and traces weak spots back to their root gap
-Wrong answers are checked for a likely misconception
-If a misconception is found, the student is connected with a verified peer/tutor who has mastered that concept
-A short remedial quiz (built from the misconception) confirms the gap has closed
-Tech stack
-Frontend: React
-Backend: Node.js, Express
-Database: MongoDB (Mongoose)
-AI: Google Gemini API (gemini-2.0-flash)
-File handling: Multer (upload), pdf-parse (text extraction)
-Project structure
+### Turning study material into a personalized learning journey
+
+*material → understanding → diagnosis → human help → reinforcement*
+
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Gemini API](https://img.shields.io/badge/AI-Gemini%202.0%20Flash-8E75B2?logo=googlegemini&logoColor=white)](https://ai.google.dev/)
+
+</div>
+
+---
+
+## 💡 What is this?
+
+**Attention Arc** is a learning app for students aged **7–16** that treats struggling not as a failing grade, but as a *specific, fixable, well-understood gap.*
+
+A student uploads a chapter or their notes. The app breaks it into core concepts, explains each one in age-appropriate language, and checks understanding with a short quiz — but instead of just scoring it, every answer is mapped to a concept. The app builds a **learning map**, traces weak spots back to their **root cause**, and even flags likely **misconceptions** behind wrong answers.
+
+The differentiator: instead of throwing more content at a struggling student, Attention Arc connects them with a **verified peer or tutor** who specifically understands that gap — a controlled, monitored human handoff, not an open chat. Afterward, a short **remedial quiz** confirms the gap has actually closed.
+
+---
+
+## 🔄 The Learning Loop
+
+```
+📄 Upload material
+        ↓
+🧠 AI extracts concepts + age-appropriate explanations
+        ↓
+📝 Short quiz (tagged per concept)
+        ↓
+🗺️  Learning map — mastered / improving / weak
+        ↓
+🔍 Root gap traced + misconception detected
+        ↓
+🤝 Matched with a peer/tutor who's mastered that gap
+        ↓
+✅ Remedial quiz confirms the gap has closed
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Tech |
+|---|---|
+| **Frontend** | React |
+| **Backend** | Node.js + Express |
+| **Database** | MongoDB (Mongoose) |
+| **AI** | Google Gemini API (`gemini-2.0-flash`) |
+| **File handling** | Multer (upload) + pdf-parse (text extraction) |
+
+---
+
+## 📁 Project Structure
+
+```
 Attention Arc/
-├── frontend/          # React app
+├── frontend/                 # React app
 └── backend/
     ├── server.js
     ├── routes/
@@ -32,32 +75,66 @@ Attention Arc/
     ├── seed/
     │   └── seedPeers.js
     └── uploads/
-Setup
-Backend
+```
+
+---
+
+## 🚀 Getting Started
+
+### Backend
+```bash
 cd backend
 npm install
-cp .env.example .env   # fill in MONGO_URI and GEMINI_API_KEY
-npm run seed            # loads sample peer/tutor profiles
-npm run dev
+cp .env.example .env      # add your MONGO_URI + GEMINI_API_KEY
+npm run seed               # loads sample peer/tutor profiles
+npm run dev                 # runs on http://localhost:5000
+```
 
-Runs on http://localhost:5000.
-
-Frontend
+### Frontend
+```bash
 cd frontend
 npm install
 npm run dev
-API endpoints
-Method	Endpoint	Purpose
-POST	/api/materials/upload	PDF → concepts + age-appropriate explanations
-POST	/api/quiz/generate	Generate quiz questions from concepts (or a targeted remedial quiz)
-POST	/api/quiz/analyze	Score answers → learning map + weak concepts
-POST	/api/gap	Trace a weak concept back to its root prerequisite gap
-POST	/api/misconception	Classify a wrong answer as a possible misconception
-POST	/api/match	Find a peer/tutor who has mastered the gap concept
-Environment variables
+```
 
-See backend/.env.example for the required keys (MONGO_URI, GEMINI_API_KEY).
+---
 
-Team
-Backend: Erine Anna Binu
-Frontend: Aleena Benny
+## 🔌 API Reference
+
+| Method | Endpoint | What it does |
+|---|---|---|
+| `POST` | `/api/materials/upload` | PDF → concepts + age-appropriate explanations |
+| `POST` | `/api/quiz/generate` | Generate quiz questions (initial or targeted remedial) |
+| `POST` | `/api/quiz/analyze` | Score answers → learning map + weak concepts |
+| `POST` | `/api/gap` | Trace a weak concept back to its root prerequisite gap |
+| `POST` | `/api/misconception` | Classify a wrong answer as a *possible* misconception |
+| `POST` | `/api/match` | Find a peer/tutor who's mastered the gap concept |
+
+---
+
+## 🔐 Environment Variables
+
+See `backend/.env.example` for the required keys:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+---
+
+## 👥 Team
+
+| Role | Name |
+|---|---|
+| Backend | Erine Anna Binu |
+| Frontend | Aleena Benny |
+
+---
+
+<div align="center">
+
+*Built for a hackathon — turning "you got a bad grade" into "here's exactly what you're missing, and here's who can help."*
+
+</div>
