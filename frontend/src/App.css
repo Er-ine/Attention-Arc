@@ -14,28 +14,77 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  background:
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(232, 163, 61, 0.09),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 85% 90%,
-      rgba(63, 143, 95, 0.08),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(150, 130, 200, 0.1),
-      transparent 60%
-    ),
-    var(--color-bg);
+  position: relative;
+  overflow-x: hidden;
   color: var(--color-ink);
   font-family: "Inter", sans-serif;
   min-height: 100vh;
+
+  /* Layered mesh background — warm terracotta + gold + sage + lavender,
+     echoing the arc-hero gradient and concept-mastery colors already
+     used throughout the app. */
+  background:
+    radial-gradient(circle at 12% 8%, rgba(193, 80, 63, 0.16), transparent 40%),
+    radial-gradient(circle at 88% 6%, rgba(232, 163, 61, 0.18), transparent 42%),
+    radial-gradient(circle at 92% 92%, rgba(63, 143, 95, 0.16), transparent 45%),
+    radial-gradient(circle at 8% 90%, rgba(150, 130, 200, 0.18), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(150, 130, 200, 0.08), transparent 60%),
+    linear-gradient(180deg, #f7f4fb 0%, var(--color-bg) 45%, #f4ecf0 100%);
+  background-attachment: fixed;
+}
+
+/* Soft floating blobs behind everything — pure decoration, no layout impact */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+body::before {
+  width: 420px;
+  height: 420px;
+  top: -120px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(232, 163, 61, 0.35), transparent 70%);
+  animation: drift-a 22s ease-in-out infinite;
+}
+
+body::after {
+  width: 480px;
+  height: 480px;
+  bottom: -160px;
+  right: -140px;
+  background: radial-gradient(circle, rgba(63, 143, 95, 0.3), transparent 70%);
+  animation: drift-b 26s ease-in-out infinite;
+}
+
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.08); }
+}
+
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, -40px) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
 }
 
 .app-shell {
@@ -49,13 +98,16 @@ body {
 .screen {
   width: 100%;
   max-width: 420px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 22px;
   padding: 40px 36px;
   box-shadow:
-    0 1px 2px rgba(27, 42, 34, 0.04),
-    0 12px 32px rgba(27, 42, 34, 0.06);
+    0 1px 2px rgba(27, 42, 34, 0.05),
+    0 20px 48px rgba(27, 42, 34, 0.1),
+    0 0 0 1px rgba(27, 42, 34, 0.03);
 }
 
 .arc-hero {
@@ -63,6 +115,7 @@ body {
   width: 140px;
   height: auto;
   margin: 0 auto 20px auto;
+  filter: drop-shadow(0 4px 10px rgba(232, 163, 61, 0.25));
 }
 
 .headline {
@@ -161,11 +214,13 @@ body {
   cursor: pointer;
   transition:
     transform 0.1s ease,
-    opacity 0.15s ease;
+    opacity 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .primary-button:hover:not(:disabled) {
   transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(27, 42, 34, 0.18);
 }
 
 .primary-button:active:not(:disabled) {
