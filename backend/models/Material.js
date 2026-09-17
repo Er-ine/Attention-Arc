@@ -1,20 +1,13 @@
 const mongoose = require('mongoose');
 
-const conceptSchema = new mongoose.Schema(
-  {
-    id: String,
-    title: String,
-    simpleExplanation: String,
-  },
-  { _id: false }
-);
-
 const materialSchema = new mongoose.Schema(
   {
     title: String,
     studentName: String,
     age: Number,
-    concepts: [conceptSchema],
+    // Flexible shape — matches whatever Gemini/the frontend expects
+    // ({ id, label, explanation: {young, teen}, simplerExplanation: {young, teen} })
+    concepts: [mongoose.Schema.Types.Mixed],
     rawTextSnippet: String,
   },
   { timestamps: true }
