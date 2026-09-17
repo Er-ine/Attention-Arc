@@ -15,6 +15,11 @@ function Onboarding({ onComplete }) {
 
   return (
     <div className="screen onboarding-screen">
+      {/* Application Title Header */}
+      <div className="app-title-header">
+        <span className="app-title-text">✨ Attention Arc</span>
+      </div>
+
       <ArcHero />
       <h1 className="headline">Let's get to know you</h1>
       <p className="subtext">
@@ -39,14 +44,18 @@ function Onboarding({ onComplete }) {
         <div className="age-toggle">
           <button
             type="button"
-            className={`age-option ${ageGroup === "young" ? "age-option-selected" : ""}`}
+            className={`age-option ${
+              ageGroup === "young" ? "age-option-selected" : ""
+            }`}
             onClick={() => setAgeGroup("young")}
           >
             7–11
           </button>
           <button
             type="button"
-            className={`age-option ${ageGroup === "teen" ? "age-option-selected" : ""}`}
+            className={`age-option ${
+              ageGroup === "teen" ? "age-option-selected" : ""
+            }`}
             onClick={() => setAgeGroup("teen")}
           >
             12–16

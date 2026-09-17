@@ -1,13 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  --color-bg: #f2eff7;
-  --color-ink: #1b2a22;
-  --color-accent: #e8a33d;
-  --color-mastered: #3f8f5f;
-  --color-gap: #c1503f;
+  --color-bg: #f3effa;
+  --color-ink: #1e1728;
+  --color-accent: #8b5cf6;
+  --color-accent-hover: #7c3aed;
+  --color-accent-shadow: #6d28d9;
+  --color-mastered: #10b981;
+  --color-gap: #ef4444;
   --color-surface: #ffffff;
-  --color-border: rgba(27, 42, 34, 0.14);
+  --color-border: rgba(139, 92, 246, 0.2);
 }
 
 * {
@@ -27,20 +29,38 @@ body {
   font-family: "Inter", sans-serif;
   min-height: 100vh;
 
-  /* Layered mesh background — warm terracotta + gold + sage + lavender,
-     echoing the arc-hero gradient and concept-mastery colors already
-     used throughout the app. */
+  /* Vibrant Mesh Lavender Gradient Background */
   background:
-    radial-gradient(circle at 12% 8%, rgba(193, 80, 63, 0.16), transparent 40%),
-    radial-gradient(circle at 88% 6%, rgba(232, 163, 61, 0.18), transparent 42%),
-    radial-gradient(circle at 92% 92%, rgba(63, 143, 95, 0.16), transparent 45%),
-    radial-gradient(circle at 8% 90%, rgba(150, 130, 200, 0.18), transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(150, 130, 200, 0.08), transparent 60%),
-    linear-gradient(180deg, #f7f4fb 0%, var(--color-bg) 45%, #f4ecf0 100%);
+    radial-gradient(
+      circle at 12% 8%,
+      rgba(139, 92, 246, 0.25),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 88% 6%,
+      rgba(192, 132, 252, 0.28),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 92% 92%,
+      rgba(168, 85, 247, 0.22),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 8% 90%,
+      rgba(216, 180, 254, 0.35),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(147, 51, 234, 0.12),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #fbf8ff 0%, var(--color-bg) 50%, #eee5f8 100%);
   background-attachment: fixed;
 }
 
-/* Soft floating blobs behind everything — pure decoration, no layout impact */
+/* Floating animated background orbs */
 body::before,
 body::after {
   content: "";
@@ -48,7 +68,7 @@ body::after {
   z-index: -1;
   border-radius: 50%;
   filter: blur(60px);
-  opacity: 0.5;
+  opacity: 0.65;
   pointer-events: none;
 }
 
@@ -57,7 +77,7 @@ body::before {
   height: 420px;
   top: -120px;
   left: -100px;
-  background: radial-gradient(circle, rgba(232, 163, 61, 0.35), transparent 70%);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%);
   animation: drift-a 22s ease-in-out infinite;
 }
 
@@ -66,18 +86,32 @@ body::after {
   height: 480px;
   bottom: -160px;
   right: -140px;
-  background: radial-gradient(circle, rgba(63, 143, 95, 0.3), transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(192, 132, 252, 0.4),
+    transparent 70%
+  );
   animation: drift-b 26s ease-in-out infinite;
 }
 
 @keyframes drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(40px, 30px) scale(1.08); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, 30px) scale(1.08);
+  }
 }
 
 @keyframes drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-30px, -40px) scale(1.06); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-30px, -40px) scale(1.06);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -90,32 +124,54 @@ body::after {
 .app-shell {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 24px 16px;
 }
 
+/* Glassmorphism main card wrapper */
 .screen {
   width: 100%;
-  max-width: 420px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 22px;
-  padding: 40px 36px;
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  padding: 36px 32px;
   box-shadow:
-    0 1px 2px rgba(27, 42, 34, 0.05),
-    0 20px 48px rgba(27, 42, 34, 0.1),
-    0 0 0 1px rgba(27, 42, 34, 0.03);
+    0 4px 6px -1px rgba(139, 92, 246, 0.05),
+    0 24px 48px -12px rgba(139, 92, 246, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s ease;
+}
+
+/* App Title Branding Header */
+.app-title-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.app-title-text {
+  font-family: "Fraunces", serif;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
 }
 
 .arc-hero {
   display: block;
-  width: 140px;
+  width: 110px;
   height: auto;
-  margin: 0 auto 20px auto;
-  filter: drop-shadow(0 4px 10px rgba(232, 163, 61, 0.25));
+  margin: 0 auto 16px auto;
+  filter: drop-shadow(0 6px 12px rgba(139, 92, 246, 0.3));
 }
 
 .headline {
@@ -125,13 +181,13 @@ body::after {
   line-height: 1.25;
   margin: 0 0 8px 0;
   text-align: center;
-  color: #0f1712;
+  color: var(--color-ink);
 }
 
 .subtext {
   font-size: 15px;
-  color: rgba(27, 42, 34, 0.65);
-  margin: 0 0 28px 0;
+  color: rgba(30, 23, 40, 0.65);
+  margin: 0 0 24px 0;
   text-align: center;
   line-height: 1.5;
 }
@@ -140,96 +196,104 @@ body::after {
 .upload-screen {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .field-label {
   font-size: 13px;
-  font-weight: 600;
-  margin-top: 14px;
-  color: rgba(27, 42, 34, 0.8);
+  font-weight: 700;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(30, 23, 40, 0.6);
 }
 
 .text-input {
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 13px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: 14px;
+  padding: 14px 16px;
   font-size: 15px;
   font-family: inherit;
-  background: var(--color-bg);
+  background: rgba(243, 239, 250, 0.6);
   color: var(--color-ink);
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .text-input:focus {
   outline: none;
   border-color: var(--color-accent);
   background: var(--color-surface);
-  box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.18);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
 }
 
 .age-toggle {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .age-option {
   flex: 1;
-  padding: 13px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-bg);
+  padding: 14px;
+  border: 2px solid var(--color-border);
+  border-radius: 14px;
+  background: rgba(243, 239, 250, 0.6);
   color: var(--color-ink);
   font-family: inherit;
   font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease,
-    transform 0.1s ease;
+  transition: all 0.15s ease;
 }
 
 .age-option:hover {
   border-color: var(--color-accent);
+  background: var(--color-surface);
 }
 
 .age-option-selected {
   border-color: var(--color-accent);
-  background: rgba(232, 163, 61, 0.15);
-  font-weight: 600;
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--color-accent-hover);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--color-accent);
 }
 
+/* Tactile 3D Primary Button */
 .primary-button {
-  margin-top: 24px;
-  padding: 15px;
+  margin-top: 20px;
+  padding: 16px;
   border: none;
-  border-radius: 10px;
-  background: var(--color-ink);
-  color: var(--color-bg);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: #ffffff;
   font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  transition:
-    transform 0.1s ease,
-    opacity 0.15s ease,
-    box-shadow 0.15s ease;
+  box-shadow:
+    0 4px 0px var(--color-accent-shadow),
+    0 8px 18px rgba(124, 58, 237, 0.35);
+  transition: all 0.1s ease;
 }
 
 .primary-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(27, 42, 34, 0.18);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0px var(--color-accent-shadow),
+    0 12px 22px rgba(124, 58, 237, 0.4);
 }
 
 .primary-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0px var(--color-accent-shadow),
+    0 4px 10px rgba(124, 58, 237, 0.3);
 }
 
 .primary-button:disabled {
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .drop-zone {
@@ -237,36 +301,37 @@ body::after {
   align-items: center;
   justify-content: center;
   min-height: 140px;
-  border: 1.5px dashed var(--color-border);
-  border-radius: 14px;
-  background: var(--color-bg);
+  border: 2px dashed var(--color-border);
+  border-radius: 16px;
+  background: rgba(243, 239, 250, 0.5);
   cursor: pointer;
   text-align: center;
-  padding: 16px;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  padding: 20px;
+  transition: all 0.2s ease;
 }
 
 .drop-zone:hover {
   border-color: var(--color-accent);
+  background: rgba(139, 92, 246, 0.08);
 }
 
 .drop-zone-filled {
   border-style: solid;
   border-color: var(--color-mastered);
-  background: rgba(63, 143, 95, 0.08);
+  background: rgba(16, 185, 129, 0.08);
 }
 
 .drop-zone-placeholder {
-  color: rgba(27, 42, 34, 0.55);
+  color: rgba(30, 23, 40, 0.55);
   font-size: 14px;
 }
 
 .drop-zone-filename {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
+  color: var(--color-mastered);
 }
+
 .tutoring-screen {
   max-width: 480px;
 }
@@ -279,17 +344,18 @@ body::after {
 }
 
 .chat-bubble {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 14px 16px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 18px;
+  padding: 16px 18px;
   font-size: 14.5px;
   line-height: 1.55;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.06);
 }
 
 .button-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .button-row .primary-button,
@@ -299,65 +365,70 @@ body::after {
 }
 
 .secondary-button {
-  padding: 15px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+  padding: 16px;
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: inherit;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .secondary-button:hover {
   border-color: var(--color-accent);
+  color: var(--color-accent-hover);
 }
+
 .quiz-screen {
   max-width: 460px;
 }
 
 .progress-text {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(27, 42, 34, 0.55);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-accent-hover);
   text-align: center;
   margin: 0 0 8px 0;
 }
 
 .quiz-screen .headline {
-  font-size: 21px;
+  font-size: 22px;
   margin-bottom: 24px;
 }
 
 .quiz-options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .quiz-option {
   text-align: left;
-  padding: 14px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-bg);
+  padding: 16px 18px;
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
   color: var(--color-ink);
   font-family: inherit;
-  font-size: 14.5px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .quiz-option:hover {
   border-color: var(--color-accent);
+  transform: translateX(4px);
 }
 
 .quiz-option-selected {
   border-color: var(--color-accent);
-  background: rgba(232, 163, 61, 0.15);
-  font-weight: 600;
+  background: rgba(139, 92, 246, 0.12);
+  font-weight: 700;
+  color: var(--color-accent-hover);
 }
