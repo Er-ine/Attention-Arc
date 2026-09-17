@@ -37,7 +37,11 @@ function traceRootGap(weakConceptId) {
 
 // =================================================================
 // 1. POST /api/materials/upload
-// form-data: file (PDF), studentName, age
+// form-data: file (PDF), studentName, age (number)
+//
+// Response shape matches the frontend's mockConcepts.js exactly, so
+// TutoringChat can consume it with zero adapter code:
+// { title, materialId, concepts: [{ id, label, explanation: {young, teen}, simplerExplanation: {young, teen} }] }
 // =================================================================
 router.post('/materials/upload', upload.single('file'), async (req, res) => {
   try {
@@ -49,9 +53,14 @@ router.post('/materials/upload', upload.single('file'), async (req, res) => {
     const parsed = await pdfParse(fileBuffer);
     const extractedText = parsed.text.slice(0, 12000); // guard against huge PDFs
 
-    const prompt = `You are helping build a study app for a ${age}-year-old student named ${studentName}.
-Read the study material below and break it into its core concepts.
-For each concept, give a short, age-appropriate simple explanation (2-3 sentences, no jargon beyond what a ${age}-year-old would understand).
+    const prompt = `You are helping build a study app for students aged 7-16, named ${studentName} (currently ${age} years old).
+Read the study material below and break it into its core concepts (3-5 concepts max).
+
+For EACH concept, give:
+- a "young" explanation (for a 7-11 year old): simple, uses an everyday analogy, 1-2 short sentences
+- a "teen" explanation (for a 12-16 year old): a bit more precise/technical, 1-2 sentences
+- a "young" simpler explanation: an even more basic fallback if the first one didn't click
+- a "teen" simpler explanation: same, but for the older age band
 
 Study material:
 """
@@ -62,7 +71,12 @@ Return ONLY valid JSON in this exact shape, nothing else:
 {
   "title": "short title for this material",
   "concepts": [
-    { "id": "camelCaseId", "title": "Concept Title", "simpleExplanation": "..." }
+    {
+      "id": "camelCaseId",
+      "label": "Concept Title",
+      "explanation": { "young": "...", "teen": "..." },
+      "simplerExplanation": { "young": "...", "teen": "..." }
+    }
   ]
 }`;
 
@@ -85,32 +99,38 @@ Return ONLY valid JSON in this exact shape, nothing else:
 
 // =================================================================
 // 2. POST /api/quiz/generate
-// Normal mode body: { concepts: [{id, title, simpleExplanation}], age }
-// Remedial mode body: { mode: 'remedial', targetConceptId, targetConceptTitle, misconceptionTag, age }
+// Normal mode body: { concepts: [{id, label, explanation, simplerExplanation}], age }
+// Remedial mode body: { mode: 'remedial', targetConceptId, targetConceptLabel, misconceptionTag, age }
+//
+// Response shape matches mockQuizQuestions.js exactly, so QuizStep.jsx
+// can consume it with zero adapter code:
+// { questions: [{ id, conceptId, prompt, options: [{ id, text, correct, misconceptionTag? }] }] }
 // =================================================================
 router.post('/quiz/generate', async (req, res) => {
   try {
-    const { mode, concepts, age, targetConceptId, targetConceptTitle, misconceptionTag } = req.body;
+    const { mode, concepts, age, targetConceptId, targetConceptLabel, misconceptionTag } = req.body;
 
     let prompt;
 
     if (mode === 'remedial') {
       prompt = `Create 3 short multiple-choice questions for a ${age}-year-old to check if they still have this specific misconception:
-Concept: ${targetConceptTitle} (id: ${targetConceptId})
+Concept: ${targetConceptLabel} (id: ${targetConceptId})
 Misconception: ${misconceptionTag}
 
-Every question should be designed so that a student with this exact misconception would pick a specific wrong option.
+Every question should be designed so that a student with this exact misconception would pick a specific wrong option. Tag that wrong option with "misconceptionTag": "${misconceptionTag}". Each question needs 3 options total, exactly one marked "correct": true.
 
 Return ONLY valid JSON:
 {
   "questions": [
     {
-      "id": "q1",
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "answerIndex": 0,
+      "id": "r1",
       "conceptId": "${targetConceptId}",
-      "misconceptionTag": "${misconceptionTag}"
+      "prompt": "...",
+      "options": [
+        { "id": "a", "text": "...", "correct": true },
+        { "id": "b", "text": "...", "correct": false, "misconceptionTag": "${misconceptionTag}" },
+        { "id": "c", "text": "...", "correct": false }
+      ]
     }
   ]
 }`;
@@ -118,17 +138,20 @@ Return ONLY valid JSON:
       prompt = `Create a short quiz (1 question per concept) for a ${age}-year-old, based on these concepts:
 ${JSON.stringify(concepts, null, 2)}
 
-Each question must have 4 options, one correct answer, and be tagged with the conceptId it tests.
+Each question needs 3 options, exactly one marked "correct": true. If a wrong option represents a common, specific misconception (not just "wrong"), tag it with a short snake_case "misconceptionTag" — otherwise omit that field.
 
 Return ONLY valid JSON:
 {
   "questions": [
     {
       "id": "q1",
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "answerIndex": 0,
-      "conceptId": "matching concept id"
+      "conceptId": "matching concept id from the list above",
+      "prompt": "...",
+      "options": [
+        { "id": "a", "text": "...", "correct": false, "misconceptionTag": "optional_tag" },
+        { "id": "b", "text": "...", "correct": true },
+        { "id": "c", "text": "...", "correct": false }
+      ]
     }
   ]
 }`;
@@ -144,31 +167,23 @@ Return ONLY valid JSON:
 
 // =================================================================
 // 3. POST /api/quiz/analyze
-// body: { questions: [...as returned by generate...], answers: { [questionId]: selectedIndex }, studentName, age }
+// body: { answers, studentName, age }
+// answers is exactly what QuizStep.jsx already builds per question:
+// [{ questionId, conceptId, correct, misconceptionTag }]
 // =================================================================
 router.post('/quiz/analyze', async (req, res) => {
   try {
-    const { questions, answers, studentName, age } = req.body;
+    const { answers, studentName, age } = req.body;
 
     const conceptStats = {}; // conceptId -> { correct, total }
-    const wrongAnswers = [];
+    const misconceptions = [];
 
-    questions.forEach((q) => {
-      const selected = answers[q.id];
-      const isCorrect = selected === q.answerIndex;
-
-      if (!conceptStats[q.conceptId]) conceptStats[q.conceptId] = { correct: 0, total: 0 };
-      conceptStats[q.conceptId].total += 1;
-      if (isCorrect) conceptStats[q.conceptId].correct += 1;
-
-      if (!isCorrect) {
-        wrongAnswers.push({
-          questionId: q.id,
-          question: q.question,
-          concept: q.conceptId,
-          correctAnswer: q.options[q.answerIndex],
-          studentAnswer: q.options[selected] ?? 'No answer',
-        });
+    answers.forEach((a) => {
+      if (!conceptStats[a.conceptId]) conceptStats[a.conceptId] = { correct: 0, total: 0 };
+      conceptStats[a.conceptId].total += 1;
+      if (a.correct) conceptStats[a.conceptId].correct += 1;
+      else if (a.misconceptionTag) {
+        misconceptions.push({ conceptId: a.conceptId, misconceptionTag: a.misconceptionTag });
       }
     });
 
@@ -184,7 +199,7 @@ router.post('/quiz/analyze', async (req, res) => {
 
     await Result.create({ studentName, age, learningMap, weakConcepts, mode: 'initial' });
 
-    res.json({ learningMap, weakConcepts, wrongAnswers });
+    res.json({ learningMap, weakConcepts, misconceptions });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Quiz analysis failed', details: err.message });
